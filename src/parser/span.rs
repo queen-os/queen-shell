@@ -1,6 +1,7 @@
 use alloc::string::{String, ToString};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Deserialize, Serialize)]
 pub struct Span {
     start: usize,
     end: usize,
@@ -140,7 +141,7 @@ impl Span {
 }
 
 /// A wrapper type that attaches a Span to a value
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Deserialize, Serialize)]
 pub struct Spanned<T> {
     pub span: Span,
     pub item: T,

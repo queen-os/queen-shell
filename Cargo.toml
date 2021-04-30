@@ -7,12 +7,14 @@ edition = "2018"
 
 [features]
 default = []
-std = []
+std = ["serde/std", "indexmap/std"]
 
 [dependencies]
 nom = { version = "6.1", default-features = false, features = ["alloc"] }
 nom_locate = { version = "3.0", default-features = false }
-enumflags2 = "0.6"
-num-bigint = { version = "0.3", default-features = false }
-bigdecimal = { version = "0.1", default-features = false }
-indexmap = "1.6"
+enumflags2 = "0.7"
+num-bigint = { version = "0.3", default-features = false, features = ["serde"] }
+bigdecimal = { version = "0.1", default-features = false, features = ["serde"] }
+indexmap = { version = "1.6", features = ["serde-1"] }
+spin = { version = "0.9", default-features = false, features = ["mutex", "spin_mutex", "rwlock"] }
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }

@@ -1,10 +1,11 @@
 use crate::parser::span::Span;
 use alloc::{boxed::Box, string::String};
 use core::fmt;
+use serde::{Deserialize, Serialize};
 
 /// A `ShellError` is a proximate error and a possible cause, which could have its own cause,
 /// creating a cause chain.
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Hash)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Hash, Deserialize, Serialize)]
 pub struct ShellError {
     pub error: ProximateShellError,
     pub cause: Option<Box<ShellError>>,
@@ -35,7 +36,26 @@ impl fmt::Display for ShellError {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone, Ord, PartialOrd, Hash)]
+impl serde::de::Error for ShellError {
+    fn custom<T>(msg: T) -> Self
+    where
+        T: core::fmt::Display,
+    {
+        ShellError::runtime_error(msg.to_string())
+    }
+}
+
+#[cfg(any(test, feature = "std"))]
+impl std::error::Error for ShellError {}
+
+#[cfg(any(test, feature = "std"))]
+impl From<std::io::Error> for ShellError {
+    fn from(e: std::io::Error) -> Self {
+        Self::runtime_error(e.to_string())
+    }
+}
+
+#[derive(Debug, Eq, PartialEq, Clone, Ord, PartialOrd, Hash, Deserialize, Serialize)]
 pub enum ProximateShellError {
     ParseError(Span, Option<String>),
     RuntimeError(String),

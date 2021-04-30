@@ -1,6 +1,7 @@
 use super::span::{Span, Spanned};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize)]
 pub enum Token {
     String(Span),
     Bare,

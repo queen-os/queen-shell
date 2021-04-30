@@ -1,27 +1,25 @@
-use alloc::vec::Vec;
-use enumflags2::BitFlags;
-use nom::{
-    branch::alt,
-    bytes::complete::{tag, take_while1},
-    character::complete::{char, none_of, space1},
-    combinator::opt,
-    // error::ParseError,
-    multi::{many0_count, many1},
-    IResult, InputIter, Slice,
-};
-use nom_locate::LocatedSpan;
-
 use self::{
     span::{Span, Spanned, SpannedItem},
     token::{SpannedToken, Token},
 };
 use crate::ShellError;
+use alloc::vec::Vec;
+use enumflags2::{bitflags, BitFlags};
+use nom::{
+    branch::alt,
+    bytes::complete::{tag, take_while1},
+    character::complete::{char, none_of, space1},
+    combinator::opt,
+    multi::{many0_count, many1},
+    IResult, InputIter, Slice,
+};
+use nom_locate::LocatedSpan;
 
-pub mod span;
-pub mod token;
-pub mod syntax_shape;
-pub mod hir;
 pub mod command;
+pub mod hir;
+pub mod span;
+pub mod syntax_shape;
+pub mod token;
 
 pub type NomSpan<'a> = LocatedSpan<&'a str>;
 
@@ -190,7 +188,9 @@ pub fn filename(input: NomSpan) -> IResult<NomSpan, SpannedToken> {
     }
 }
 
-#[derive(BitFlags, Copy, Clone, Eq, PartialEq)]
+#[bitflags]
+#[repr(u64)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 enum SawSpecial {
     PathSeparator = 0b01,
     Glob = 0b10,

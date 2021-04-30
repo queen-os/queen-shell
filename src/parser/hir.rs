@@ -1,8 +1,9 @@
 use crate::parser::{span::Span, token::SpannedToken};
 use alloc::{string::String, vec::Vec};
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Call {
     pub head: SpannedToken,
     pub positional: Option<Vec<SpannedToken>>,
@@ -20,7 +21,7 @@ impl Call {
     }
 }
 
-#[derive(Debug, Default, Clone, Eq, PartialEq)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct NamedArguments {
     pub named: IndexMap<String, NamedValue>,
 }
@@ -60,7 +61,7 @@ impl NamedArguments {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub enum NamedValue {
     AbsentSwitch,
     PresentSwitch(Span),
