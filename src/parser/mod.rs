@@ -19,6 +19,9 @@ use crate::ShellError;
 
 pub mod span;
 pub mod token;
+pub mod syntax_shape;
+pub mod hir;
+pub mod command;
 
 pub type NomSpan<'a> = LocatedSpan<&'a str>;
 
@@ -258,8 +261,16 @@ pub fn flag(input: NomSpan) -> IResult<NomSpan, SpannedToken> {
     Ok((input, Token::Flag(bare.span).spanned(Span::new(start, end))))
 }
 
+pub fn external_word(input: NomSpan) -> IResult<NomSpan, SpannedToken> {
+    let start = input.location_offset();
+    let (input, _) = take_while1(is_external_word_char)(input)?;
+    let end = input.location_offset();
+
+    Ok((input, Token::ExternalWord.spanned(Span::new(start, end))))
+}
+
 pub fn node(input: NomSpan) -> IResult<NomSpan, SpannedToken> {
-    let (input, node) = alt((string, flag, filename, pattern))(input)?;
+    let (input, node) = alt((string, flag, filename, pattern, external_word))(input)?;
 
     Ok((input, node))
 }

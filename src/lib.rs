@@ -6,5 +6,6 @@ extern crate core;
 
 pub mod error;
 pub mod parser;
+pub mod signature;
 
 pub use error::ShellError;

@@ -10,7 +10,9 @@ default = []
 std = []
 
 [dependencies]
-serde = { version = "1.0", default-features = false, features = ["derive"] }
 nom = { version = "6.1", default-features = false, features = ["alloc"] }
 nom_locate = { version = "3.0", default-features = false }
 enumflags2 = "0.6"
+num-bigint = { version = "0.3", default-features = false }
+bigdecimal = { version = "0.1", default-features = false }
+indexmap = "1.6"

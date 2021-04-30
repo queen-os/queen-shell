@@ -1,7 +1,6 @@
 use super::span::{Span, Spanned};
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Token {
     String(Span),
     Bare,
@@ -9,6 +8,7 @@ pub enum Token {
     Whitespace,
     Separator,
     GlobPattern,
+    ExternalWord,
 }
 
 impl Token {
@@ -20,6 +20,7 @@ impl Token {
             Token::Whitespace => "whitespace",
             Token::Separator => "separator",
             Token::GlobPattern => "glob pattern",
+            Token::ExternalWord => "external word",
         }
     }
 }

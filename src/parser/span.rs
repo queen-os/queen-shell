@@ -1,7 +1,6 @@
 use alloc::string::{String, ToString};
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Serialize, Deserialize, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct Span {
     start: usize,
     end: usize,
@@ -130,13 +129,18 @@ impl Span {
     pub fn slice<'a>(&self, source: &'a str) -> &'a str {
         &source[self.start..self.end]
     }
+
     pub fn len(&self) -> usize {
         self.end - self.start
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 }
 
 /// A wrapper type that attaches a Span to a value
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize, Hash)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Spanned<T> {
     pub span: Span,
     pub item: T,
