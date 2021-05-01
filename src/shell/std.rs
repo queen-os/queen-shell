@@ -1,9 +1,14 @@
 use crate::{
-    commands::{cd::CdArgs, ls::LsArgs, mkdir::MkDirArgs, RunnableContext},
+    commands::{CdArgs, LsArgs, MkDirArgs, RunnableContext},
     error::ShellError,
     evaluate::Value,
 };
-use std::{env, env::current_dir, path::PathBuf, sync::atomic::Ordering};
+use std::{
+    env, env::current_dir, ffi::OsStr, future::Future, io, path::PathBuf, pin::Pin,
+    sync::atomic::Ordering,
+};
+
+use super::Shell;
 
 #[derive(Debug, Clone, Default)]
 pub struct StdShell {}
@@ -15,9 +20,27 @@ impl StdShell {
     }
 }
 
-impl super::Shell for StdShell {
+impl Shell for StdShell {
     fn name(&self) -> &str {
         "Std file system shell"
+    }
+
+    fn homedir(&self) -> Option<String> {
+        dirs::home_dir().map(|p| p.to_string_lossy().to_string())
+    }
+
+    fn readline(&self) -> Pin<Box<dyn Future<Output = String>>> {
+        let future = async {
+            let mut s = String::new();
+            io::stdin().read_line(&mut s).unwrap();
+            s
+        };
+
+        Box::pin(future)
+    }
+
+    fn print(&self, s: &str) {
+        print!("{}", s);
     }
 
     fn ls(
@@ -45,6 +68,7 @@ impl super::Shell for StdShell {
                 p
             }
         };
+
         let mut paths = match glob::glob(&path.to_string_lossy()) {
             Ok(g) => Ok(g),
             Err(_) => Err(ShellError::runtime_error("Invalid File or Pattern")),
@@ -53,18 +77,17 @@ impl super::Shell for StdShell {
         if paths.peek().is_none() {
             return Err(ShellError::runtime_error("Invalid File or Pattern"));
         }
+
         let mut results = vec![];
-        for path in paths {
+        for path in paths.flatten() {
             if ctrl_c.load(Ordering::Acquire) {
                 break;
             }
-            if let Ok(path) = path {
-                if let Some(name) = path.file_name().and_then(|s| s.to_str()) {
-                    let item = format!("{}: {}", get_path_type(&path), name);
-                    results.push(Value::String(item));
-                }
+            if let Some(name) = path.file_name().and_then(OsStr::to_str) {
+                results.push(Value::String(format!("{}: {}", get_path_type(&path), name)));
             }
         }
+
         if results.is_empty() {
             Ok(None)
         } else {
@@ -73,23 +96,19 @@ impl super::Shell for StdShell {
     }
 
     fn cd(&self, args: CdArgs) -> Result<Option<Vec<Value>>, ShellError> {
-        let target = match args.dst {
-            None => match dirs::home_dir() {
-                Some(o) => o,
-                _ => {
-                    return Err(ShellError::runtime_error(
-                        "Can not change to home directory",
-                    ));
-                }
-            },
+        let target: PathBuf = match args.dst {
+            None => dirs::home_dir()
+                .ok_or_else(|| ShellError::runtime_error("Can not change to home directory"))?,
             Some(target) => target.into(),
         };
+
         if target.exists() && !target.is_dir() {
             return Err(ShellError::runtime_error(format!(
                 "{} is not a directory",
                 target.to_string_lossy().to_string()
             )));
         }
+
         let path = PathBuf::from(self.path());
         env::set_current_dir(path.join(&target)).expect("cannot to set current directory");
         Ok(None)

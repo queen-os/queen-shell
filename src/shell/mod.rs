@@ -1,16 +1,24 @@
 use crate::{
-    commands::{cd::CdArgs, ls::LsArgs, mkdir::MkDirArgs, RunnableContext},
+    commands::{CdArgs, LsArgs, MkDirArgs, RunnableContext},
     error::ShellError,
     evaluate::Value,
 };
-use alloc::{string::String, vec::Vec};
+use alloc::{boxed::Box, string::String, vec::Vec};
+use core::{future::Future, pin::Pin};
 
 #[cfg(feature = "std")]
 pub mod std;
+#[cfg(feature = "std")]
+pub use self::std::StdShell;
 
-pub trait Shell: core::fmt::Debug {
+pub trait Shell: core::fmt::Debug + Send + Sync {
     fn name(&self) -> &str;
-    // fn homedir(&self) -> Option<String>;
+
+    fn homedir(&self) -> Option<String>;
+
+    fn readline(&self) -> Pin<Box<dyn Future<Output = String>>>;
+
+    fn print(&self, s: &str);
 
     fn ls(&self, args: LsArgs, context: &RunnableContext)
         -> Result<Option<Vec<Value>>, ShellError>;

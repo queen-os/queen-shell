@@ -63,14 +63,14 @@ pub struct Context {
 }
 
 impl Context {
-    // pub fn basic() -> Self {
-    //     Self {
-    //         registry: CommandRegistry::empty(),
-    //         current_errors: Arc::new(RwLock::new(Vec::new())),
-    //         ctrl_c: Arc::new(AtomicBool::new(false)),
-    //         shell: Arc::new(FilesystemShell::new()),
-    //     }
-    // }
+    pub fn new(shell: Arc<dyn Shell>) -> Self {
+        Self {
+            registry: CommandRegistry::empty(),
+            current_errors: Arc::new(RwLock::new(Vec::new())),
+            ctrl_c: Arc::new(AtomicBool::new(false)),
+            shell,
+        }
+    }
 
     pub fn add_commands(&mut self, commands: Vec<CommandRef>) {
         for command in commands {

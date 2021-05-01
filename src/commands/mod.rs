@@ -10,9 +10,15 @@ use alloc::{sync::Arc, vec::Vec};
 use core::sync::atomic::AtomicBool;
 use serde::Deserialize;
 
-pub mod cd;
-pub mod ls;
-pub mod mkdir;
+mod cd;
+mod ls;
+mod mkdir;
+mod classified;
+
+pub use cd::{Cd, CdArgs};
+pub use ls::{Ls, LsArgs};
+pub use mkdir::{MkDir, MkDirArgs};
+pub use classified::{run_external_command, run_internal_command};
 
 pub trait Command: Send + Sync {
     fn name(&self) -> &str;

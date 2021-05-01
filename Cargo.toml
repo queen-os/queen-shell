@@ -6,8 +6,12 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["std"]
+default = []
 std = ["serde/std", "indexmap/std", "glob", "dirs"]
+
+[[bin]]
+name = "std_shell"
+required-features = ["std"]
 
 [dependencies]
 nom = { version = "6.1", default-features = false, features = ["alloc"] }
