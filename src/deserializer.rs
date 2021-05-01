@@ -7,8 +7,8 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
-use bigdecimal::ToPrimitive;
 use de::Visitor;
+use num_traits::ToPrimitive;
 use serde::de;
 
 #[derive(Debug)]

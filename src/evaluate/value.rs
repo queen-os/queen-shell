@@ -2,8 +2,8 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
-use bigdecimal::BigDecimal;
 use num_bigint::BigInt;
+use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Deserialize, Serialize)]
@@ -12,7 +12,7 @@ pub enum Value {
     /// A "big int", an integer with arbitrarily large size (aka not limited to 64-bit)
     Int(BigInt),
     /// A "big decimal", an decimal number with arbitrarily large size (aka not limited to 64-bit)
-    Number(BigDecimal),
+    Number(OrderedFloat<f64>),
     /// A string value
     String(String),
     /// A glob pattern, eg foo*

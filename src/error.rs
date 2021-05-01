@@ -1,5 +1,5 @@
 use crate::parser::span::Span;
-use alloc::{boxed::Box, string::String};
+use alloc::{boxed::Box, string::{String, ToString}};
 use core::fmt;
 use serde::{Deserialize, Serialize};
 

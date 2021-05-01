@@ -6,7 +6,7 @@ use crate::{
     shell::Shell,
     signature::Signature,
 };
-use alloc::{string::String, sync::Arc, vec::Vec};
+use alloc::{string::{String, ToString}, sync::Arc, vec::Vec};
 use core::sync::atomic::AtomicBool;
 use indexmap::IndexMap;
 use spin::RwLock;
