@@ -10,6 +10,10 @@ use alloc::{sync::Arc, vec::Vec};
 use core::sync::atomic::AtomicBool;
 use serde::Deserialize;
 
+pub mod cd;
+pub mod ls;
+pub mod mkdir;
+
 pub trait Command: Send + Sync {
     fn name(&self) -> &str;
 
@@ -50,6 +54,7 @@ pub struct RunnableArgs<T> {
 }
 
 impl<T> RunnableArgs<T> {
+    #[inline]
     pub fn run(self) -> Result<Option<Vec<Value>>, ShellError> {
         (self.callback)(self.args, &self.context)
     }
