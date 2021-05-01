@@ -37,10 +37,7 @@ impl fmt::Display for ShellError {
 }
 
 impl serde::de::Error for ShellError {
-    fn custom<T>(msg: T) -> Self
-    where
-        T: core::fmt::Display,
-    {
+    fn custom<T: fmt::Display>(msg: T) -> Self {
         ShellError::runtime_error(msg.to_string())
     }
 }

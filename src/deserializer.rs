@@ -3,7 +3,10 @@ use crate::{
     error::ShellError,
     evaluate::{CallInfo, Value},
 };
-use alloc::{string::String, vec::Vec};
+use alloc::{
+    string::{String, ToString},
+    vec::Vec,
+};
 use bigdecimal::ToPrimitive;
 use de::Visitor;
 use serde::de;
