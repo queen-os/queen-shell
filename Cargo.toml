@@ -6,8 +6,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = []
-std = ["serde/std", "indexmap/std", "glob", "dirs"]
+default = ["std"]
+std = ["serde/std", "indexmap/std", "glob", "dirs", "futures-lite"]
 
 [[bin]]
 name = "std_shell"
@@ -25,3 +25,4 @@ spin = { version = "0.9", default-features = false, features = ["rwlock"] }
 serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
 glob = { version = "0.3.0", optional = true }
 dirs = { version = "3.0", optional = true }
+futures-lite = { version = "1.11", optional = true }

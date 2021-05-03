@@ -3,10 +3,7 @@ use crate::{
     error::ShellError,
     evaluate::Value,
 };
-use std::{
-    env, env::current_dir, ffi::OsStr, future::Future, io, path::PathBuf, pin::Pin,
-    sync::atomic::Ordering,
-};
+use std::{env, env::current_dir, ffi::OsStr, future::Future, io::{self, Write, stdout}, path::PathBuf, pin::Pin, sync::atomic::Ordering};
 
 use super::Shell;
 
@@ -40,7 +37,8 @@ impl Shell for StdShell {
     }
 
     fn print(&self, s: &str) {
-        print!("{}", s);
+        stdout().write_all(s.as_bytes()).unwrap();
+        stdout().flush().unwrap();
     }
 
     fn ls(
